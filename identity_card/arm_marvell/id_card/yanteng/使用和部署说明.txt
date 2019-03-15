@@ -1,0 +1,22 @@
+
+接口的一般调用流程：
+	1. 初始化端口 InitComm/InitCommExt
+		InitCommExt自动搜索初始化端口
+		
+	2. 卡认证 Authenticate，需要先调用此接口才能读取卡内容；调用此接口时，需先把身份证放置在读卡器上调用才能成功
+	
+	3. 读卡操作 Read_Content 根据传入的参数值，读取身份证的对应内容，读取的文字信息，相片文件，
+		指纹信息（如果有）分别保存在当前工作目录下的wz.txt, xp.wlt, zp.bmp, fp.dat文件中。
+	
+	4. CloseComm 关闭端口
+	
+具体的接口参数和返回值请查看termb.h文件中的接口说明。
+1. 工具链采用arm-marvell-linux-gnueabi编译，demo和编译方法可参照main.cpp和Makefile。
+2. driver目录下lusbsdtdrv.ko为usb驱动。注：驱动基于linux-2.6.29-caijian内核，采用arm-marvell-linux-gnueabi编译而成。
+	使用命令
+	#insmod lusbsdtdrv.ko
+	加载usb驱动后，插入模块，在/dev目录下会产生名字为sdt0的字符型设备。然后应用层可调用接口。
+3. lib目录下为编译用到的库文件，
+4. 程序调用可以用如下方式：
+	# LD_LIBRARY_PATH=lib ./main
+	也可以将lib目录下所有库文件拷贝到系统库目录中，直接调用即可。
