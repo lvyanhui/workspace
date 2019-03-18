@@ -1,0 +1,61 @@
+#ifndef _CSTRING_H_
+#define _CSTRING_H_
+
+#include <string.h>
+#include <iostream>
+
+class CString{
+	public:
+		CString();
+		CString(const char* p);
+		~CString();
+		CString(const CString& str);
+		CString& operator=(const CString& str);
+	
+		int getLength() const { return length_;}
+	private:
+		char* data_;
+		int length_;
+};
+
+CString::CString():length_(0) {
+	data_ = new char(0);
+}
+
+CString::CString(const char* p) {
+	//if (p==NULL)
+	int length = strlen(p);	//strlen 不包含'\0'
+	data_ = new char(length+1);	 
+	strcpy(data_, p);       //strcpy包含'\0'
+	this->length_ = length;
+}
+
+CString::~CString(){
+	delete[] data_;
+	data_ = NULL;
+	length_ = 0;
+}
+
+CString::CString(const CString& str) {
+	//if(this == &str)
+    //    return;
+	//else {
+		int length = str.getLength();
+	//	delete data_;
+		data_ = new char[length+1];
+		strcpy(data_, str.data_);
+	//} 拷贝构造，那么这个对象一定不存在，所以不可能是自拷贝，也不需要释放data_
+}
+
+CString& CString::operator=(const CString& str) {
+	if(this == &str)	
+		return *this;
+	
+	if(data_ != NULL)
+		delete[] data_;
+	data_ = new char(str.getLength()+1);
+	strcpy(data_, str.data_);
+	return *this;
+}
+
+#endif
